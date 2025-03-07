@@ -22,4 +22,19 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    
+    - name: Log in to the Container registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: christianbirchler-org
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push Docker image
+      id: push
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: |
+          ghcr.io/christianbirchler-org/spring-ping-pong:${{ github.sha }}
+          ghcr.io/christianbirchler-org/spring-ping-pong:latest
